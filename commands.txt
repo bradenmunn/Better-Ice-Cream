@@ -1,0 +1,179 @@
+CREATE TABLE icecream(
+id int(11) NOT NULL AUTO_INCREMENT,
+flavor varchar(25),
+scoops int(4),
+container varchar(25),
+sprinkles varchar(25),
+payment varchar(10),
+subject_id int(11) NOT NULL,
+PRIMARY KEY (id),
+FOREIGN KEY (subject_id) REFERENCES customers(id) ON DELETE CASCADE
+);
+
+CREATE TABLE customers(
+id int(11) NOT NULL AUTO_INCREMENT,
+fName varchar(25),
+lName varchar(25),
+email varchar(30),
+PRIMARY KEY (id)
+);
+
+
+SELECT * FROM icecream JOIN customer ON customer.id=icecream.subject_id WHERE icecream.subject_id=2;
+
+
+<?php
+ 
+?>
+<html>
+
+<style>
+	@font-face {
+	   font-family: myFont;
+	   src: url(Helamica7.27.40PM.ttf);
+	}
+
+	body {
+	   font-family: myFont;
+	}
+</style>
+
+<font color="99FFFF">
+<head>
+<title >Process Order</title>
+</head>
+<body background="cone.jpg">
+ <h1 align="center">Order added.</h1>
+
+ <?php
+ 
+ $flavor=$_POST['flavor'];
+ $scoops=$_POST['scoops'];
+ $container=$_POST['container'];
+ $sprinkles=$_POST['sprinkles'];
+ $payment=$_POST['payment'];
+ $subject_id=$_POST['subject_id'];
+ 
+ $fName=$_POST['fName'];
+ $lName=$_POST['lName'];
+ $email=$_POST['email'];
+ $hour=$_POST['hour'];
+ $minute=$_POST['minute'];
+ 
+  $con = mysqli_connect("localhost","root","cubby99","IceCreamShop");
+ // Check connection
+  if (mysqli_connect_errno())
+  {
+     echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  }
+  
+
+$sql="INSERT INTO customer (fName,lName,email,hour,minute)
+	   VALUES ('$fName','$lName','$email','$hour','$minute')";
+$sql2= "INSERT INTO icecream (flavor,scoops,container,sprinkles,payment,subject_id) 
+	   VALUES ('$flavor','$scoops','$container','$sprinkles','$payment','$subject_id')";
+
+
+	$result1 = mysqli_query($con, $sql);
+	$result2 = mysqli_query($con, $sql2);
+	if ( ($result1 === false) || ($result2 === false))  {
+	  printf("error: %s\n", mysqli_error($con));
+	}
+	else {
+		echo "<h1 align='center'>Order Successfully Placed! Your customer id is: ".$subject_id.", use it for future orders!</h1>";
+	}
+	
+	
+	$sqlSELECT1 = "SELECT * FROM customer";
+	$sqlSELECT2 = "SELECT * FROM icecream";
+	$resultSELECT1 = $con->query($sqlSELECT1);
+	$resultSELECT2 = $con->query($sqlSELECT2);
+echo "
+	</table>
+	
+	<table size='70%' border='1' align='center' style='color:#99FFFF'>
+	<tr>
+		<th>ID</th>
+		<th>First Name</th>
+		<th>Last Name</th>
+		<th>Email</th>
+		<th>Hour</th>
+		<th/>
+		<th>Minute</th>
+	</tr>
+		";
+
+
+	if ($resultSELECT1->num_rows > 0) 
+	{
+		while($row = $resultSELECT1->fetch_assoc()) 
+		{
+			echo "<tr>
+					<td>$row[id]</td> 
+					<td>$row[fName]</td> 
+					<td>$row[lName]</td> 
+					<td>$row[email]</td>
+					<td>$row[hour]</td>
+					<td>:</td>
+					<td>$row[minute]</td>
+				</tr>";
+		}
+	} 
+	else 
+	{
+		echo "0 results";
+	}
+	
+	echo "
+	<table size='70%' border='1' align='center' style='color:#99FFFF'>
+	<tr>
+		<th>ID</th>
+		<th>Subject ID</th>
+		<th>Flavor</th>
+		<th>Scoops</th>
+		<th>Container</th>
+		<th>Sprinkles</th>
+		<th>Payment</th>
+	</tr>
+	";
+
+
+	if ($resultSELECT2->num_rows > 0) 
+	{
+		while($row = $resultSELECT2->fetch_assoc()) 
+		{
+			echo "<tr>
+					<td>$row[id]</td> 
+					<td>$row[subject_id]</td>
+					<td>$row[flavor]</td> 
+					<td>$row[scoops]</td> 
+					<td>$row[container]</td>
+					<td>$row[sprinkles]</td>
+					<td>$row[payment]</td>
+				</tr>";
+		}
+	} 
+	else 
+	{
+		echo "0 results";
+	}
+
+	
+	
+  mysqli_close($con);
+ ?>
+ 
+	<p align="center">
+		<button type="button" align="center"> <a href="placeOrder.php">Return to Store</a></button>
+	</p>
+	
+	<style>
+		a:link    {color:black; background-color:transparent; text-decoration:none}
+		a:visited {color:black; background-color:transparent; text-decoration:none}
+		a:hover   {color:red; background-color:transparent; text-decoration:underline}
+		a:active  {color:red; background-color:transparent; text-decoration:underline}
+	</style>
+	
+</body>
+</font>
+</html>
